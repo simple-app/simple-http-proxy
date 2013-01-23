@@ -1,0 +1,22 @@
+{
+  "name": "simple-proxy",
+  "version": "0.1.0",
+  "description": "Simple proxy middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/flokk/simple-proxy.git"
+  },
+  "keywords": [
+    "proxy",
+    "simple"
+  ],
+  "author": "Cameron Bytheway <cameron@nujii.com>",
+  "license": "MIT",
+  "dependencies": {
+    "http-proxy": "~0.8.7"
+  }
+}
