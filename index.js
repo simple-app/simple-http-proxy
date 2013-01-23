@@ -7,7 +7,7 @@ var httpProxy = require("http-proxy"),
 
 module.exports = function(path, host, port, https) {
   if (!port) port = 80;
-  if (!https) https = true;
+  if (typeof https == "undefined") https = true;
 
   return function simpleHttpProxy(req, res, next) {
     // Are we connecting to the proxy?
