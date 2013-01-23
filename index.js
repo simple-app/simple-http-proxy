@@ -9,7 +9,7 @@ module.exports = function(path, host, port, https) {
   if (!port) port = 80;
   if (!https) https = true;
 
-  return function(req, res, next) {
+  return function simpleHttpProxy(req, res, next) {
     // Are we connecting to the proxy?
     if (req.url.indexOf(path) === 0) {
    

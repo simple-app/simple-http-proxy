@@ -1,4 +1,4 @@
-simple-proxy
+simple-http-proxy
 ============
 
 Simple proxy middleware for connect/express
@@ -9,7 +9,7 @@ Usage
 Create an http app
 ```js
 var express = require("express")
-  , proxy = require("simple-proxy");
+  , proxy = require("simple-http-proxy");
 
 
 var app = express();

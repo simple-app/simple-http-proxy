@@ -1,5 +1,5 @@
 {
-  "name": "simple-proxy",
+  "name": "simple-http-proxy",
   "version": "0.1.0",
   "description": "Simple proxy middleware",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/flokk/simple-proxy.git"
+    "url": "git://github.com/flokk/simple-http-proxy.git"
   },
   "keywords": [
     "proxy",
