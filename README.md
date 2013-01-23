@@ -27,7 +27,7 @@ $ curl http://localhost:5000/api
 Options
 -------
 
-proxy(route, host, port, https)
+proxy(route, host, https, port)
 
 ### route (string i.e. "/api")
 
@@ -37,10 +37,10 @@ Route on which to mount proxy
 
 Target host
 
-### port (integer)
-
-Target port
-
 ### https (bool)
 
 Target uses https
+
+### port (integer)
+
+Target port
