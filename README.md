@@ -14,33 +14,25 @@ var express = require("express")
 
 var app = express();
 
-app.use(proxy("/api", "my.other.host.com"));
+app.use(proxy("/api", "http://my.other.host.com/path-to-proxy"));
 ```
 
 Make the request
 ```sh
 $ curl http://localhost:5000/api
 
-<h1>Welcome to my.other.host.com</h1>
+<h1>Welcome to my.other.host.com/path-to-proxy</h1>
 ```
 
 Options
 -------
 
-proxy(route, host, https, port)
+proxy(route, target)
 
 ### route (string i.e. "/api")
 
 Route on which to mount proxy
 
-### host (string i.e. "google.com")
+### host (string i.e. "https://google.com")
 
-Target host
-
-### https (bool)
-
-Target uses https
-
-### port (integer)
-
-Target port
+Target host of the proxy request. This MUST be a string that can be parsed by [url](http://nodejs.org/api/url.html).
