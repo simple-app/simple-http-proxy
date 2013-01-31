@@ -9,7 +9,7 @@ var httpProxy = require("http-proxy"),
 module.exports = function(path, endpoint) {
   var parsedUrl = url.parse(endpoint);
 
-  var https = parsedUrl.protocol.indexOf("https") === 0
+  var https = parsedUrl.protocol?(parsedUrl.protocol.indexOf("https") === 0):false
     , host = parsedUrl.host
     , hostname = parsedUrl.hostname
     , port = parsedUrl.port || (https ? 443 : 80)
