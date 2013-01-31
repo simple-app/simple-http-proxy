@@ -14,7 +14,7 @@ var express = require("express")
 
 var app = express();
 
-app.use(proxy("/api", "http://my.other.host.com/path-to-proxy"));
+app.use("/api", proxy("http://my.other.host.com/path-to-proxy"));
 ```
 
 Make the request
@@ -27,11 +27,7 @@ $ curl http://localhost:5000/api
 Options
 -------
 
-proxy(route, target)
-
-### route (string i.e. "/api")
-
-Route on which to mount proxy
+proxy(target)
 
 ### host (string i.e. "https://google.com")
 
