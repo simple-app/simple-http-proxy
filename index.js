@@ -29,7 +29,7 @@ module.exports = function(endpoint) {
       .set(req.headers)
       .set({
         "x-forwarded-host": host,
-        "x-forwarded-proto": req.protocol,
+        "x-forwarded-proto": req.connection.encrypted ? "https" : "http",
         "x-forwarded-path": resPath
       });
 
