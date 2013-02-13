@@ -2,43 +2,41 @@
 /**
  * Module dependencies
  */
-var httpProxy = require("http-proxy"),
-    RoutingProxy = httpProxy.RoutingProxy,
-    url = require("url");
+var superagent = require("superagent")
+  , http = require('http');
+
+// Don't let superagent serialize anything
+superagent.serialize = {};
 
 module.exports = function(endpoint) {
-  var parsedUrl = url.parse(endpoint);
-
-  var https = parsedUrl.protocol?(parsedUrl.protocol.indexOf("https") === 0):false
-    , host = parsedUrl.host
-    , hostname = parsedUrl.hostname
-    , port = parsedUrl.port || (https ? 443 : 80)
-    , base = parsedUrl.path;
-
-  var proxy = new RoutingProxy({
-    enable: {
-      xforward: true
-    },
-    target: {
-      https: https,
-      hostname: hostname,
-      host: host,
-      port: port
-    }
-  });
-
   return function simpleHttpProxy(req, res, next) {
-    // Append the base
-    req.url = base+((req.url==="/")?"":req.url);
+    // Remove the host header
+    var hostInfo = req.headers.host.split(":")
+      , host = hostInfo[0]
+      , port = hostInfo[1]
+      , resPath = req.originalUrl.replace(req.url, "");
+    delete req.headers.host;
 
-    // Modify the host header
-    req.headers.host = host + (https ? (port === 443 ? "" : ":"+port) : (port === 80 ? "" : ":"+port));
+    // Optionally delete cookie
+    delete req.headers.cookie;
 
-    // proxy the bad boy
-    proxy.proxyRequest(req, res, {
-      host: host,
-      hostname: hostname,
-      port: port
-    });
+    // We'll need to add a / if it's not on there
+    if(resPath.indexOf("/") === -1) resPath = "/"+resPath;
+
+    // Send it through superagent
+    var request = superagent(req.method, endpoint+req.url)
+      .buffer(false)
+      .set(req.headers)
+      .set({
+        "x-forwarded-host": host,
+        "x-forwarded-proto": req.protocol,
+        "x-forwarded-path": resPath
+      });
+
+    if (port) request.set("x-forwarded-port", port);
+
+    // Pipe upstream and downstream
+    req.pipe(request);
+    request.pipe(res);
   }
 }
