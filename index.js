@@ -54,7 +54,7 @@ module.exports = function(endpoint, opts) {
     debug("sending proxy request", options);
 
     // Make the request with the correct protocol
-    var request = protocols[parsedUrl.protocol.replace(":", "") || 'http'].request(options, function(response) {
+    var request = protocols[(parsedUrl.protocol || 'http').replace(":", "")].request(options, function(response) {
       debug("got response");
 
       // Send down the statusCode and headers
