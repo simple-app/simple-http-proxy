@@ -16,6 +16,9 @@ module.exports = function(endpoint, opts) {
   var parsedUrl = url.parse(endpoint);
 
   return function simpleHttpProxy(req, res, next) {
+    // Get our forwarding info
+    var hostInfo = req.headers.host.split(":");
+
     // Remove the host header
     delete req.headers.host;
 
@@ -36,9 +39,8 @@ module.exports = function(endpoint, opts) {
 
     // Enable forwarding headers
     if(opts.xforward) {
-      // Get our forwarding info
-      var hostInfo = req.headers.host.split(":")
-        , resPath = req.originalUrl.replace(req.url, "");
+      // Get the path at which the middleware is mounted
+      var resPath = req.originalUrl.replace(req.url, "");
 
       // We'll need to add a / if it's not on there
       if(resPath.indexOf("/") !== 0) resPath = join("/", resPath);
