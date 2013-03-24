@@ -1,5 +1,5 @@
-simple-http-proxy
-============
+simple-http-proxy [![Build Status](https://travis-ci.org/flokk/simple-http-proxy.png?branch=master)](https://travis-ci.org/flokk/simple-http-proxy)
+=================
 
 Simple proxy middleware for connect/express
 
