@@ -46,11 +46,11 @@ module.exports = function(endpoint, opts) {
       if(resPath.indexOf("/") !== 0) resPath = join("/", resPath);
 
       // Pass along our headers
-      options.headers["x-forwarded-proto"] = req.connection.encrypted ? "https" : "http";
-      options.headers["x-forwarded-host"] = hostInfo[0];
-      options.headers["x-forwarded-path"] = resPath;
+      options.headers[opts.xforward.proto || "x-forwarded-proto"] = req.connection.encrypted ? "https" : "http";
+      options.headers[opts.xforward.host || "x-forwarded-host"] = hostInfo[0];
+      options.headers[opts.xforward.path || "x-forwarded-path"] = resPath;
 
-      if (hostInfo[1]) options.headers["x-forwarded-port"] = hostInfo[1];
+      if (hostInfo[1]) options.headers[opts.xforward.path || "x-forwarded-port"] = hostInfo[1];
     }
 
     debug("sending proxy request", options);
