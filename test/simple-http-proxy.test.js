@@ -10,8 +10,7 @@ app.use("/google", proxy("https://www.google.com"));
 
 describe("simple-http-proxy", function(){
 
-  var server
-    , uri;
+  var server, uri;
 
   before(function(done) {
     server = proxyApp.listen(function() {
