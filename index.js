@@ -53,6 +53,22 @@ module.exports = function(endpoint, opts) {
       if (hostInfo[1]) options.headers[opts.xforward.path || "x-forwarded-port"] = hostInfo[1];
     }
 
+    /**
+     * Hack for nginx backends where node, by default, sends no 'content-length'
+     * header if no data is sent with the request and sets the 'transfer-encoding'
+     * to 'chunked'. Nginx will then send a 411 because the body contains a '0'
+     * which is the length of the chunk
+     *
+     *     GET /proxy
+     *     transfer-encoding: chunked
+     *     
+     *     0
+     *
+     */
+    if(req.method in ["POST", "DELETE"] && options.headers['transfer-encoding'] != 'chunked') {
+      options.headers['content-length'] = options.headers['content-length'] || '0';
+    }
+
     debug("sending proxy request", options);
 
     // Make the request with the correct protocol
