@@ -65,7 +65,7 @@ module.exports = function(endpoint, opts) {
      *     0
      *
      */
-    if(req.method in ["POST", "DELETE"] && options.headers['transfer-encoding'] != 'chunked') {
+    if(~["POST", "DELETE"].indexOf(req.method) && options.headers['transfer-encoding'] != 'chunked') {
       options.headers['content-length'] = options.headers['content-length'] || '0';
     }
 
