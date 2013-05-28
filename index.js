@@ -50,7 +50,7 @@ module.exports = function(endpoint, opts) {
       options.headers[opts.xforward.host || "x-forwarded-host"] = hostInfo[0];
       options.headers[opts.xforward.path || "x-forwarded-path"] = resPath;
 
-      if (hostInfo[1]) options.headers[opts.xforward.path || "x-forwarded-port"] = hostInfo[1];
+      if (hostInfo[1]) options.headers[opts.xforward.port || "x-forwarded-port"] = hostInfo[1];
     }
 
     /**
