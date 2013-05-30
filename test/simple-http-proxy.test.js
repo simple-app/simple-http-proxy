@@ -20,6 +20,11 @@ describe("simple-http-proxy", function(){
 
       app.use("/proxy", proxy(uri));
       app.use("/xforward", proxy(uri, {xforward: true}));
+      app.use("/header", proxy(uri+'/header', {
+        header: function() {
+          return {'Authorization': 'Bearer xyz123abc='};
+        }
+      }));
       done();
     });
   });
@@ -60,4 +65,17 @@ describe("simple-http-proxy", function(){
         done();
       });
   });
+
+  it("should allow dynamic custom headers", function(done) {
+    request(app)
+      .get("/header")
+      .expect(/Authorization/i)
+      .expect(/Bearer xyz123abc=/)
+      .end(function(err, res) {
+        if(err) return done(err);
+        if(!res.ok) return done(new Error(res.text));
+        done();
+      });
+  });
+
 });
