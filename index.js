@@ -53,6 +53,13 @@ module.exports = function(endpoint, opts) {
       if (hostInfo[1]) options.headers[opts.xforward.port || "x-forwarded-port"] = hostInfo[1];
     }
 
+    if (opts.header) {
+      var headers = opts.header();
+      Object.keys(headers).forEach(function(header) {
+        req.headers[header] = headers[header];
+      });
+    }
+
     /**
      * Hack for nginx backends where node, by default, sends no 'content-length'
      * header if no data is sent with the request and sets the 'transfer-encoding'
