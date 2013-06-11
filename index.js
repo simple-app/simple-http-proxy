@@ -3,7 +3,6 @@
  * Module dependencies
  */
 var url = require('url')
-  , join = require('path').join
   , debug = require('debug')("simple-http-proxy")
   , protocols = {
       http: require('http'),
@@ -33,7 +32,7 @@ module.exports = function(endpoint, opts) {
       hostname: parsedUrl.hostname,
       port: parsedUrl.port,
       headers: req.headers,
-      path: join(parsedUrl.pathname, trailingSlash ? req.url : req.url.substring(1)),
+      path: url.resolve(parsedUrl.pathname, trailingSlash ? req.url : req.url.substring(1)),
       method: req.method
     };
 
@@ -43,7 +42,7 @@ module.exports = function(endpoint, opts) {
       var resPath = req.originalUrl.replace(req.url, "");
 
       // We'll need to add a / if it's not on there
-      if(resPath.indexOf("/") !== 0) resPath = join("/", resPath);
+      if(resPath.indexOf("/") !== 0) resPath = url.resolve("/", resPath);
 
       // Pass along our headers
       options.headers[opts.xforward.proto || "x-forwarded-proto"] = req.connection.encrypted ? "https" : "http";
