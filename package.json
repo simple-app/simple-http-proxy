@@ -1,6 +1,6 @@
 {
   "name": "simple-http-proxy",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Simple proxy middleware",
   "main": "index.js",
   "scripts": {
