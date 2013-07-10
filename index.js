@@ -90,9 +90,9 @@ module.exports = function(endpoint, opts) {
       request.setSocketKeepAlive(false);
       request.socket.destroy();
 
-      // Pass down the error
-      var err = new Error("Proxy to '"+endpoint+"' timed out");
-      request.emit("error", err);
+      // Mark this as a gateway timeout
+      res.status(504);
+      next(new Error("Proxy to '"+endpoint+"' timed out"));
     });
 
     // Pipe the client request upstream

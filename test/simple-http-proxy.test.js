@@ -20,6 +20,7 @@ describe("simple-http-proxy", function(){
 
       app.use("/proxy", proxy(uri));
       app.use("/xforward", proxy(uri, {xforward: true}));
+      app.use("/timeout", proxy(uri+'/timeout', {timeout:100}));
       done();
     });
   });
@@ -35,6 +36,18 @@ describe("simple-http-proxy", function(){
       .end(function(err, res) {
         if(err) return done(err);
         if(!res.ok) return done(new Error(res.text));
+        done();
+      });
+  });
+
+  it("should impose a timeout", function(done) {
+    request(app)
+      .get("/timeout")
+      .expect(504)
+      .end(function(err, res) {
+        // We *should* get an error
+        if(err) return done();
+        if(res.ok) return done(new Error(res.text));
         done();
       });
   });
