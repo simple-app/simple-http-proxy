@@ -93,7 +93,7 @@ module.exports = function(endpoint, opts) {
 
       // Pass down the error
       var err = new Error("Proxy to '"+endpoint+"' timed out");
-      request.emit("error", err);
+      request.emit("timeoutError", err);
     });
 
     // Pipe the client request upstream
@@ -101,5 +101,9 @@ module.exports = function(endpoint, opts) {
 
     // Pass on our errors
     request.on('error', next);
+    request.on('timeoutError', function(error) {
+      res.status(504);
+      next(error);
+    });
   }
 }
