@@ -25,10 +25,11 @@ module.exports = function(endpoint, opts) {
   var parsedUrl = url.parse(endpoint);
 
   // Should we keep the trailing slash on a root request?
-  var trailingSlash = endpoint[endpoint.length-1] === '/';
+  var trailingSlash = endpoint[endpoint.length - 1] === '/';
 
   // If we've got a trailing slash remove it
-  if (trailingSlash) parsedUrl.pathname = parsedUrl.pathname.slice(0, parsedUrl.pathname.length-1);
+  if (parsedUrl.pathname === '/') parsedUrl.pathname = '';
+  if (trailingSlash) parsedUrl.pathname = parsedUrl.pathname.slice(0, parsedUrl.pathname.length - 1);
 
   return function simpleHttpProxy(req, res, next) {
     // Get our forwarding info
