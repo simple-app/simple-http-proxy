@@ -31,6 +31,15 @@ module.exports = function(endpoint, opts) {
   if (parsedUrl.pathname === '/') parsedUrl.pathname = '';
   if (trailingSlash) parsedUrl.pathname = parsedUrl.pathname.slice(0, parsedUrl.pathname.length - 1);
 
+  var xforward;
+  // x-forward headers
+  if (opts.xforward) {
+    xforward = {};
+    ['proto', 'host', 'path', 'port'].forEach(function(header) {
+      xforward[header] = opts.xforward[header] || 'x-forwarded-' + header;
+    });
+  }
+
   return function simpleHttpProxy(req, res, next) {
     // Get our forwarding info
     var hostInfo = req.headers.host.split(':');
@@ -54,7 +63,7 @@ module.exports = function(endpoint, opts) {
     };
 
     // Enable forwarding headers
-    if(opts.xforward) {
+    if(xforward) {
       // Get the path at which the middleware is mounted
       var resPath = req.originalUrl.replace(req.url, '');
 
@@ -62,11 +71,11 @@ module.exports = function(endpoint, opts) {
       if(resPath.indexOf('/') !== 0) resPath = '/' + resPath;
 
       // Pass along our headers
-      options.headers[opts.xforward.proto || 'x-forwarded-proto'] = req.connection.encrypted ? 'https' : 'http';
-      options.headers[opts.xforward.host || 'x-forwarded-host'] = hostInfo[0];
-      options.headers[opts.xforward.path || 'x-forwarded-path'] = resPath;
+      options.headers[xforward.proto] = req.headers[xforward.proto] || req.connection.encrypted ? 'https' : 'http';
+      options.headers[xforward.host] = req.headers[xforward.host] || hostInfo[0];
+      options.headers[xforward.path] = req.headers[xforward.path] || resPath;
 
-      if (hostInfo[1]) options.headers[opts.xforward.port || 'x-forwarded-port'] = hostInfo[1];
+      if (hostInfo[1]) options.headers[xforward.port] = req.headers[xforward.port] || hostInfo[1];
     }
 
     /**
