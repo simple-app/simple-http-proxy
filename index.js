@@ -71,7 +71,7 @@ module.exports = function(endpoint, opts) {
       if(resPath.indexOf('/') !== 0) resPath = '/' + resPath;
 
       // Pass along our headers
-      options.headers[xforward.proto] = req.headers[xforward.proto] || req.connection.encrypted ? 'https' : 'http';
+      options.headers[xforward.proto] = req.headers[xforward.proto] || (req.connection.encrypted ? 'https' : 'http');
       options.headers[xforward.host] = req.headers[xforward.host] || hostInfo[0];
       options.headers[xforward.path] = req.headers[xforward.path] || resPath;
 
