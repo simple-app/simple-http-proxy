@@ -100,8 +100,15 @@ module.exports = function(endpoint, opts) {
     var request = protocols[(parsedUrl.protocol || 'http').replace(':', '')].request(options, function(response) {
       debug('got response');
 
+      // The headers have already been sent so we can't actually respond to this request
+      if (res.headersSent) {
+        res.end();
+        return request.abort();
+      }
+
       // Send down the statusCode and headers
       debug('sending head', response.statusCode, response.headers);
+
       res.writeHead(response.statusCode, response.headers);
 
       // Pipe the response
@@ -112,7 +119,6 @@ module.exports = function(endpoint, opts) {
     // Handle any timeouts that occur
     request.setTimeout(opts.timeout || 10000, function() {
       // Clean up the socket
-      // TODO is there a better way to do this? There's a 'socket hang up' error being emitted...
       request.setSocketKeepAlive(false);
       request.socket.destroy();
 
