@@ -65,7 +65,9 @@ module.exports = function(endpoint, opts) {
     // Enable forwarding headers
     if(xforward) {
       // Get the path at which the middleware is mounted
-      var resPath = req.originalUrl.replace(req.url, '');
+      var resPath = req.originalUrl
+        .replace(req.url, '')
+        .split('?')[0];
 
       // We'll need to add a / if it's not on there
       if(resPath.indexOf('/') !== 0) resPath = '/' + resPath;
