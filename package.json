@@ -1,6 +1,6 @@
 {
   "name": "simple-http-proxy",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "Simple proxy middleware",
   "main": "index.js",
   "scripts": {
@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/flokk/simple-http-proxy.git"
+    "url": "git://github.com/simple-app/simple-http-proxy.git"
   },
   "keywords": [
     "proxy",
     "simple"
   ],
-  "author": "Cameron Bytheway <cameron@nujii.com>",
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "debug": "~0.7.2"
