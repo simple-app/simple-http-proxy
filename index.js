@@ -6,8 +6,8 @@
 var url = require('url')
   , debug = require('debug')('simple-http-proxy')
   , protocols = {
-      http: require('http'),
-      https: require('https')
+    http: require('http'),
+    https: require('https')
     };
 
 /**
@@ -65,9 +65,7 @@ module.exports = function(endpoint, opts) {
     // Enable forwarding headers
     if(xforward) {
       // Get the path at which the middleware is mounted
-      var resPath = req.originalUrl
-        .replace(req.url, '')
-        .split('?')[0];
+      var resPath = req.originalUrl.replace(req.url, '');
 
       // We'll need to add a / if it's not on there
       if(resPath.indexOf('/') !== 0) resPath = '/' + resPath;
@@ -88,7 +86,7 @@ module.exports = function(endpoint, opts) {
      *
      *     GET /proxy
      *     transfer-encoding: chunked
-     *     
+     *     *
      *     0
      *
      */
@@ -102,15 +100,28 @@ module.exports = function(endpoint, opts) {
     var request = protocols[(parsedUrl.protocol || 'http').replace(':', '')].request(options, function(response) {
       debug('got response');
 
-      // The headers have already been sent so we can't actually respond to this request
-      if (res.headersSent) {
-        res.end();
-        return request.abort();
-      }
+      debug("Response Received with status " + response.statusCode);
+      if(xforward && response.statusCode===303){
+        debug("Detected Redirection Response");
 
+        var parsedRedirectionUrl= url.parse(response.headers.location);
+
+        ['host', 'path', 'port'].forEach(function(header) {
+          if(parsedRedirectionUrl[header]){
+            parsedRedirectionUrl[header] = opts.xforward[header] ? opts.xforward[header]:parsedRedirectionUrl[header];
+          }
+        });
+
+        if(parsedRedirectionUrl.protocol){
+          parsedRedirectionUrl.protocol = opts.xforward.proto ? opts.xforward.proto:parsedRedirectionUrlprotocol;
+        }
+
+        var rewrittenURL = url.format(parsedRedirectionUrl);
+        response.headers.location = rewrittenURL;
+        debug("Redirection location rewritten to " + rewrittenURL);
+      }
       // Send down the statusCode and headers
       debug('sending head', response.statusCode, response.headers);
-
       res.writeHead(response.statusCode, response.headers);
 
       // Pipe the response
@@ -121,6 +132,7 @@ module.exports = function(endpoint, opts) {
     // Handle any timeouts that occur
     request.setTimeout(opts.timeout || 10000, function() {
       // Clean up the socket
+      // TODO is there a better way to do this? There's a 'socket hang up' error being emitted...
       request.setSocketKeepAlive(false);
       request.socket.destroy();
 
