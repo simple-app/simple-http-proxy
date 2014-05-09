@@ -3,12 +3,12 @@
  * Module dependencies
  */
 
-var url = require('url')
-  , debug = require('debug')('simple-http-proxy')
-  , protocols = {
-      http: require('http'),
-      https: require('https')
-    };
+var url = require('url');
+var debug = require('debug')('simple-http-proxy');
+var protocols = {
+  http: require('http'),
+  https: require('https')
+};
 
 /**
  * Proxy an endpoint with options
@@ -20,7 +20,7 @@ var url = require('url')
  */
 
 module.exports = function(endpoint, opts) {
-  if(!opts) opts = {};
+  if (!opts) opts = {};
 
   var parsedUrl = url.parse(endpoint);
 
@@ -48,7 +48,7 @@ module.exports = function(endpoint, opts) {
     delete req.headers.host;
 
     // Optionally delete cookie
-    if(opts.cookies === false) delete req.headers.cookie;
+    if (opts.cookies === false) delete req.headers.cookie;
 
     // Resolve the url
     var path = parsedUrl.pathname + (!trailingSlash && req.url === '/' ? '' : req.url);
@@ -63,14 +63,14 @@ module.exports = function(endpoint, opts) {
     };
 
     // Enable forwarding headers
-    if(xforward) {
+    if (xforward) {
       // Get the path at which the middleware is mounted
       var resPath = req.originalUrl
         .replace(req.url, '')
         .split('?')[0];
 
       // We'll need to add a / if it's not on there
-      if(resPath.indexOf('/') !== 0) resPath = '/' + resPath;
+      if (resPath.indexOf('/') !== 0) resPath = '/' + resPath;
 
       // Pass along our headers
       options.headers[xforward.proto] = req.headers[xforward.proto] || (req.connection.encrypted ? 'https' : 'http');
@@ -88,11 +88,12 @@ module.exports = function(endpoint, opts) {
      *
      *     GET /proxy
      *     transfer-encoding: chunked
-     *     
+     *
      *     0
      *
      */
-    if(~['POST', 'DELETE'].indexOf(req.method) && options.headers['transfer-encoding'] != 'chunked') {
+
+    if (~['POST', 'DELETE'].indexOf(req.method) && options.headers['transfer-encoding'] != 'chunked') {
       options.headers['content-length'] = options.headers['content-length'] || '0';
     }
 
@@ -119,14 +120,14 @@ module.exports = function(endpoint, opts) {
     });
 
     // Handle any timeouts that occur
-    request.setTimeout(opts.timeout || 10000, function() {
+    if (opts.timeout !== false) request.setTimeout(opts.timeout || 10000, function() {
       // Clean up the socket
       request.setSocketKeepAlive(false);
       request.socket.destroy();
 
       // Mark this as a gateway timeout
       res.status(504);
-      next(new Error('Proxy to "'+endpoint+'" timed out'));
+      next(new Error('Proxy to "' + endpoint + '" timed out'));
     });
 
     // Pipe the client request upstream
