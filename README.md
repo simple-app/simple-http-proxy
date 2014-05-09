@@ -1,4 +1,4 @@
-simple-http-proxy [![Build Status](https://travis-ci.org/flokk/simple-http-proxy.png?branch=master)](https://travis-ci.org/flokk/simple-http-proxy)
+simple-http-proxy [![Build Status](https://travis-ci.org/simple-app/simple-http-proxy.png?branch=master)](https://travis-ci.org/simple-app/simple-http-proxy)
 =================
 
 Simple proxy middleware for connect/express
@@ -34,7 +34,7 @@ $ curl http://localhost:5000/api
 
 You can also specify some options as a second parameter
 
-```
+```js
 app.use('/api', proxy('http://my.other.host.com/path-to-proxy', opts));
 ```
 
