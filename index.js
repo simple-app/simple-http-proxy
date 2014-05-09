@@ -97,6 +97,9 @@ module.exports = function(endpoint, opts) {
       options.headers['content-length'] = options.headers['content-length'] || '0';
     }
 
+    // allow the caller to change the options
+    if (opts.onrequest) opts.onrequest(options, req);
+
     debug('sending proxy request', options);
 
     // Make the request with the correct protocol
@@ -111,6 +114,9 @@ module.exports = function(endpoint, opts) {
 
       // Send down the statusCode and headers
       debug('sending head', response.statusCode, response.headers);
+
+      // allow the caller to override the default pipe behavior
+      if (opts.onresponse && opts.onresponse(response, res)) return;
 
       res.writeHead(response.statusCode, response.headers);
 

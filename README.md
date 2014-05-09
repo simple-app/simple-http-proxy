@@ -11,8 +11,8 @@ Create an http app
 /**
  * Module dependencies
  */
-var express = require("express")
-  , proxy = require("simple-http-proxy");
+var express = require('express');
+var proxy = require('simple-http-proxy');
 
 /**
  * Expose the app
@@ -22,7 +22,7 @@ var app = module.exports = express();
 /**
  * Mount the proxy middleware
  */
-app.use("/api", proxy("http://my.other.host.com/path-to-proxy"));
+app.use('/api', proxy('http://my.other.host.com/path-to-proxy'));
 ```
 
 Make the request
@@ -35,19 +35,51 @@ $ curl http://localhost:5000/api
 You can also specify some options as a second parameter
 
 ```
-// snip
+app.use('/api', proxy('http://my.other.host.com/path-to-proxy', opts));
+```
 
-app.use("/api", proxy("http://my.other.host.com/path-to-proxy", {
+### Options
 
-  // Disable sending cookies; on by deafult
-  cookies: false,
+#### `cookies`
 
-  // Add x-forwarded-* headers to proxy request
-  xforward: true,
+Disable sending cookies by passing `false`; on by deafult.
 
-  // Change the timeout length of the proxy (defaults to 10 seconds)
-  timeout: 20000
-}));
+#### `xforward`
 
-// snip
+Setting this to `true` will set `x-forwarded-proto`, `x-forwarded-host`, `x-forwarded-port` and `x-forwarded-path` headers.
+
+Passing an object will override the header names:
+
+```js
+{
+  proto: 'x-orig-proto',
+  host: 'x-orig-host',
+  port: 'x-orig-port',
+  path: 'x-orig-path'
+}
+```
+
+#### `timeout`
+
+A positive millisecond value for the timeout of the request. Defaults to 10000 (10s).
+
+Setting it to `false` will disable the timeout.
+
+#### `onrequest`
+
+A function to be called on each request. The first parameter will be the [options object](http://nodejs.org/api/http.html#http_http_request_options_callback) for the http request. The second will be the [request object](http://nodejs.org/api/http.html#http_class_http_clientrequest).
+
+This can be used to change any of the http options for a given request.
+
+#### `onresponse`
+
+A function to be called on each response. The first parameter will be the [incoming message](http://nodejs.org/api/http.html#http_http_incomingmessage) for a given request. The second will be the [server response object](http://nodejs.org/api/http.html#http_class_http_serverresponse).
+
+If this function returns `true` the default pipe will not be used and will be up to the `onresponse` function to implement that behavior. This is useful for rewriting responses that are sent to the client.
+
+Tests
+-----
+
+```sh
+$ npm test
 ```
