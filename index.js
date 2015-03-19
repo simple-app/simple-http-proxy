@@ -35,7 +35,7 @@ module.exports = function(endpoint, opts) {
   // x-forward headers
   if (opts.xforward) {
     xforward = {};
-    ['proto', 'host', 'path', 'port'].forEach(function(header) {
+    ['proto', 'host', 'path', 'port', 'for'].forEach(function(header) {
       xforward[header] = opts.xforward[header] || 'x-forwarded-' + header;
     });
   }
@@ -74,9 +74,9 @@ module.exports = function(endpoint, opts) {
 
       // Pass along our headers
       options.headers[xforward.proto] = req.headers[xforward.proto] || (req.connection.encrypted ? 'https' : 'http');
-      options.headers[xforward.host] = req.headers[xforward.host] || hostInfo[0];
-      options.headers[xforward.path] = req.headers[xforward.path] || resPath;
-
+      options.headers[xforward.host]  = req.headers[xforward.host] || hostInfo[0];
+      options.headers[xforward.path]  = req.headers[xforward.path] || resPath;
+      options.headers[xforward.for]   = req.headers[xforward.for] || req.connection.remoteAddress;
       if (hostInfo[1]) options.headers[xforward.port] = req.headers[xforward.port] || hostInfo[1];
     }
 
