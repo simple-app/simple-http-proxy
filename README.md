@@ -46,7 +46,7 @@ Disable sending cookies by passing `false`; on by deafult.
 
 #### `xforward`
 
-Setting this to `true` will set `x-forwarded-proto`, `x-forwarded-host`, `x-forwarded-port` and `x-forwarded-path` headers.
+Setting this to `true` will set `x-forwarded-proto`, `x-forwarded-host`, `x-forwarded-port`, `x-forwarded-path` and `x-forwarded-for` headers.
 
 Passing an object will override the header names:
 
